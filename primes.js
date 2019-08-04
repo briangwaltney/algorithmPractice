@@ -1,7 +1,6 @@
 //finds all prime numbers less than n
 
 const getPrimes = (n) => {
-  let start = new Date();
 
   let primes = [2]
   for (let i = 3; i <= n; i += 2) {
@@ -12,24 +11,45 @@ const getPrimes = (n) => {
         break
       }
     }
-    if (isPrime === true) primes.push(i)
+    if (isPrime) primes.push(i)
   }
-  console.log('loop time:', new Date() - start)
   return primes.length
 }
-
-console.log(getPrimes(10000));
-
+console.time()
+console.log('loop: ', getPrimes(10000));
+console.timeEnd()
 
 const sievePrimes = (n) => {
-  let start = new Date();
   let primes = Array.apply(null, { length: n - 1 }).map((n, i) => i + 2)
   for (let i = 0; i < primes.length; i++) {
     primes = primes.filter(num => num % primes[i] !== 0 || num === primes[i])
   }
-  console.log('sieve time:', new Date() - start)
   return primes.length
 }
 
-console.log(sievePrimes(10000));
+console.time()
+console.log('Sieve: ', sievePrimes(10000));
+console.timeEnd()
 
+
+///
+showPrimes = (limit) => {
+  const isPrime = (num) => {
+    for (let j = 0; j < primes.length; j++)
+      if (num % primes[j] === 0)
+        return false
+    return true
+  }
+
+  let primes = [2]
+  for (let i = 3; i <= limit; i += 2) {
+    if (isPrime(i)) primes.push(i)
+  }
+  return primes.length
+}
+
+
+
+console.time()
+console.log('Better Loop: ', showPrimes(10000))
+console.timeEnd()

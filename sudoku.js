@@ -1,261 +1,273 @@
 //Sudoku solver
-const _ = require('lodash')
-const blank = [
-  [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ],
-  [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ],
-  [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ],
-  [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ],
-  [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ],
-  [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ],
-  [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ],
-  [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ],
-  [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ],
-]
+const _ = require("lodash");
 
-const easy1 = [
-  [
-    [4, 6, 8],
-    [0, 9, 0],
-    [1, 2, 0]
-  ],
-  [
-    [0, 2, 0],
-    [0, 8, 6],
-    [5, 3, 0]
-  ],
-  [
-    [0, 9, 0],
-    [0, 0, 2],
-    [0, 0, 0]
-  ],
-  [
-    [0, 0, 9],
-    [0, 0, 0],
-    [6, 1, 0]
-  ],
-  [
-    [3, 0, 0],
-    [0, 0, 0],
-    [0, 0, 2]
-  ],
-  [
-    [0, 6, 8],
-    [0, 0, 0],
-    [4, 0, 0]
-  ],
-  [
-    [0, 0, 0],
-    [7, 0, 0],
-    [0, 3, 0]
-  ],
-  [
-    [0, 1, 8],
-    [2, 9, 0],
-    [0, 5, 0]
-  ],
-  [
-    [0, 3, 5],
-    [0, 8, 0],
-    [9, 7, 1]
-  ],
-]
+const easyObj = [
+  { value: 5, x: 1, y: 1, options: [] },
+  { value: 4, x: 2, y: 1, options: [] },
+  { value: 3, x: 3, y: 1, options: [] },
+  { value: 9, x: 4, y: 1, options: [] },
+  { value: 0, x: 5, y: 1, options: [] },
+  { value: 0, x: 6, y: 1, options: [] },
+  { value: 0, x: 7, y: 1, options: [] },
+  { value: 0, x: 8, y: 1, options: [] },
+  { value: 0, x: 9, y: 1, options: [] },
+  { value: 0, x: 1, y: 2, options: [] },
+  { value: 2, x: 2, y: 2, options: [] },
+  { value: 7, x: 3, y: 2, options: [] },
+  { value: 0, x: 4, y: 2, options: [] },
+  { value: 5, x: 5, y: 2, options: [] },
+  { value: 1, x: 6, y: 2, options: [] },
+  { value: 0, x: 7, y: 2, options: [] },
+  { value: 0, x: 8, y: 2, options: [] },
+  { value: 0, x: 9, y: 2, options: [] },
+  { value: 0, x: 1, y: 3, options: [] },
+  { value: 0, x: 2, y: 3, options: [] },
+  { value: 8, x: 3, y: 3, options: [] },
+  { value: 0, x: 4, y: 3, options: [] },
+  { value: 7, x: 5, y: 3, options: [] },
+  { value: 0, x: 6, y: 3, options: [] },
+  { value: 2, x: 7, y: 3, options: [] },
+  { value: 5, x: 8, y: 3, options: [] },
+  { value: 6, x: 9, y: 3, options: [] },
+  { value: 0, x: 1, y: 4, options: [] },
+  { value: 0, x: 2, y: 4, options: [] },
+  { value: 9, x: 3, y: 4, options: [] },
+  { value: 5, x: 4, y: 4, options: [] },
+  { value: 6, x: 5, y: 4, options: [] },
+  { value: 0, x: 6, y: 4, options: [] },
+  { value: 4, x: 7, y: 4, options: [] },
+  { value: 0, x: 8, y: 4, options: [] },
+  { value: 0, x: 9, y: 4, options: [] },
+  { value: 0, x: 1, y: 5, options: [] },
+  { value: 8, x: 2, y: 5, options: [] },
+  { value: 0, x: 3, y: 5, options: [] },
+  { value: 3, x: 4, y: 5, options: [] },
+  { value: 0, x: 5, y: 5, options: [] },
+  { value: 2, x: 6, y: 5, options: [] },
+  { value: 9, x: 7, y: 5, options: [] },
+  { value: 1, x: 8, y: 5, options: [] },
+  { value: 5, x: 9, y: 5, options: [] },
+  { value: 0, x: 1, y: 6, options: [] },
+  { value: 0, x: 2, y: 6, options: [] },
+  { value: 2, x: 3, y: 6, options: [] },
+  { value: 1, x: 4, y: 6, options: [] },
+  { value: 0, x: 5, y: 6, options: [] },
+  { value: 7, x: 6, y: 6, options: [] },
+  { value: 6, x: 7, y: 6, options: [] },
+  { value: 8, x: 8, y: 6, options: [] },
+  { value: 0, x: 9, y: 6, options: [] },
+  { value: 0, x: 1, y: 7, options: [] },
+  { value: 3, x: 2, y: 7, options: [] },
+  { value: 0, x: 3, y: 7, options: [] },
+  { value: 0, x: 4, y: 7, options: [] },
+  { value: 0, x: 5, y: 7, options: [] },
+  { value: 9, x: 6, y: 7, options: [] },
+  { value: 0, x: 7, y: 7, options: [] },
+  { value: 6, x: 8, y: 7, options: [] },
+  { value: 0, x: 9, y: 7, options: [] },
+  { value: 2, x: 1, y: 8, options: [] },
+  { value: 0, x: 2, y: 8, options: [] },
+  { value: 0, x: 3, y: 8, options: [] },
+  { value: 7, x: 4, y: 8, options: [] },
+  { value: 0, x: 5, y: 8, options: [] },
+  { value: 0, x: 6, y: 8, options: [] },
+  { value: 0, x: 7, y: 8, options: [] },
+  { value: 9, x: 8, y: 8, options: [] },
+  { value: 8, x: 9, y: 8, options: [] },
+  { value: 0, x: 1, y: 9, options: [] },
+  { value: 0, x: 2, y: 9, options: [] },
+  { value: 4, x: 3, y: 9, options: [] },
+  { value: 0, x: 4, y: 9, options: [] },
+  { value: 8, x: 5, y: 9, options: [] },
+  { value: 5, x: 6, y: 9, options: [] },
+  { value: 0, x: 7, y: 9, options: [] },
+  { value: 3, x: 8, y: 9, options: [] },
+  { value: 0, x: 9, y: 9, options: [] }
+];
+
+const easyObj2 = [
+  { value: 5, x: 1, y: 1, options: [] },
+  { value: 4, x: 2, y: 1, options: [] },
+  { value: 3, x: 3, y: 1, options: [] },
+  { value: 9, x: 4, y: 1, options: [] },
+  { value: 0, x: 5, y: 1, options: [] },
+  { value: 0, x: 6, y: 1, options: [] },
+  { value: 0, x: 7, y: 1, options: [] },
+  { value: 0, x: 8, y: 1, options: [] },
+  { value: 0, x: 9, y: 1, options: [] },
+  { value: 0, x: 1, y: 2, options: [] },
+  { value: 2, x: 2, y: 2, options: [] },
+  { value: 7, x: 3, y: 2, options: [] },
+  { value: 0, x: 4, y: 2, options: [] },
+  { value: 5, x: 5, y: 2, options: [] },
+  { value: 1, x: 6, y: 2, options: [] },
+  { value: 03, x: 7, y: 2, options: [] },
+  { value: 04, x: 8, y: 2, options: [] },
+  { value: 09, x: 9, y: 2, options: [] },
+  { value: 0, x: 1, y: 3, options: [] },
+  { value: 0, x: 2, y: 3, options: [] },
+  { value: 8, x: 3, y: 3, options: [] },
+  { value: 04, x: 4, y: 3, options: [] },
+  { value: 7, x: 5, y: 3, options: [] },
+  { value: 03, x: 6, y: 3, options: [] },
+  { value: 2, x: 7, y: 3, options: [] },
+  { value: 5, x: 8, y: 3, options: [] },
+  { value: 6, x: 9, y: 3, options: [] },
+  { value: 03, x: 1, y: 4, options: [] },
+  { value: 0, x: 2, y: 4, options: [] },
+  { value: 9, x: 3, y: 4, options: [] },
+  { value: 5, x: 4, y: 4, options: [] },
+  { value: 6, x: 5, y: 4, options: [] },
+  { value: 0, x: 6, y: 4, options: [] },
+  { value: 4, x: 7, y: 4, options: [] },
+  { value: 02, x: 8, y: 4, options: [] },
+  { value: 0, x: 9, y: 4, options: [] },
+  { value: 0, x: 1, y: 5, options: [] },
+  { value: 8, x: 2, y: 5, options: [] },
+  { value: 06, x: 3, y: 5, options: [] },
+  { value: 3, x: 4, y: 5, options: [] },
+  { value: 04, x: 5, y: 5, options: [] },
+  { value: 2, x: 6, y: 5, options: [] },
+  { value: 9, x: 7, y: 5, options: [] },
+  { value: 1, x: 8, y: 5, options: [] },
+  { value: 5, x: 9, y: 5, options: [] },
+  { value: 04, x: 1, y: 6, options: [] },
+  { value: 05, x: 2, y: 6, options: [] },
+  { value: 2, x: 3, y: 6, options: [] },
+  { value: 1, x: 4, y: 6, options: [] },
+  { value: 09, x: 5, y: 6, options: [] },
+  { value: 7, x: 6, y: 6, options: [] },
+  { value: 6, x: 7, y: 6, options: [] },
+  { value: 8, x: 8, y: 6, options: [] },
+  { value: 03, x: 9, y: 6, options: [] },
+  { value: 0, x: 1, y: 7, options: [] },
+  { value: 3, x: 2, y: 7, options: [] },
+  { value: 05, x: 3, y: 7, options: [] },
+  { value: 02, x: 4, y: 7, options: [] },
+  { value: 0, x: 5, y: 7, options: [] },
+  { value: 9, x: 6, y: 7, options: [] },
+  { value: 0, x: 7, y: 7, options: [] },
+  { value: 6, x: 8, y: 7, options: [] },
+  { value: 04, x: 9, y: 7, options: [] },
+  { value: 2, x: 1, y: 8, options: [] },
+  { value: 06, x: 2, y: 8, options: [] },
+  { value: 0, x: 3, y: 8, options: [] },
+  { value: 7, x: 4, y: 8, options: [] },
+  { value: 03, x: 5, y: 8, options: [] },
+  { value: 04, x: 6, y: 8, options: [] },
+  { value: 05, x: 7, y: 8, options: [] },
+  { value: 9, x: 8, y: 8, options: [] },
+  { value: 8, x: 9, y: 8, options: [] },
+  { value: 09, x: 1, y: 9, options: [] },
+  { value: 0, x: 2, y: 9, options: [] },
+  { value: 4, x: 3, y: 9, options: [] },
+  { value: 06, x: 4, y: 9, options: [] },
+  { value: 8, x: 5, y: 9, options: [] },
+  { value: 5, x: 6, y: 9, options: [] },
+  { value: 0, x: 7, y: 9, options: [] },
+  { value: 3, x: 8, y: 9, options: [] },
+  { value: 02, x: 9, y: 9, options: [] }
+];
 
 const hard1 = [
-  [
-    [0, 0, 0],
-    [5, 9, 0],
-    [6, 7, 2]
-  ],
-  [
-    [0, 1, 0],
-    [0, 0, 6],
-    [0, 4, 0]
-  ],
-  [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 1, 0]
-  ],
-  [
-    [4, 0, 8],
-    [0, 0, 0],
-    [0, 5, 0]
-  ],
-  [
-    [0, 0, 3],
-    [0, 6, 0],
-    [4, 0, 0]
-  ],
-  [
-    [0, 6, 0],
-    [0, 0, 0],
-    [8, 0, 3]
-  ],
-  [
-    [0, 8, 0],
-    [0, 0, 0],
-    [0, 0, 0]
-  ],
-  [
-    [0, 2, 0],
-    [9, 0, 0],
-    [0, 7, 0]
-  ],
-  [
-    [1, 5, 7],
-    [0, 4, 6],
-    [0, 0, 0]
-  ],
-]
+  [[0, 0, 0], [5, 9, 0], [6, 7, 2]],
+  [[0, 1, 0], [0, 0, 6], [0, 4, 0]],
+  [[0, 0, 0], [0, 0, 0], [0, 1, 0]],
+  [[4, 0, 8], [0, 0, 0], [0, 5, 0]],
+  [[0, 0, 3], [0, 6, 0], [4, 0, 0]],
+  [[0, 6, 0], [0, 0, 0], [8, 0, 3]],
+  [[0, 8, 0], [0, 0, 0], [0, 0, 0]],
+  [[0, 2, 0], [9, 0, 0], [0, 7, 0]],
+  [[1, 5, 7], [0, 4, 6], [0, 0, 0]]
+];
 
+const printPuzzle = puzzle => {
+  console.log("Puzzle Starting");
+  let i = 1;
+  while (i < 10) {
+    let row = [];
+    puzzle.map(position => {
+      if (position.y === i) return row.push(position.value);
+    });
+    console.log(row);
+    i++;
+  }
+  console.log("Puzzle Ending");
+};
+const findIndividualOption = (x, y, puzzle) => {
+  let cube = [];
+  let vert = [];
+  let horiz = [];
+  const key = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  let xLimit = Math.ceil(x / 3);
+  let yLimit = Math.ceil(y / 3);
+  puzzle.map(item => {
+    if (Math.ceil(item.x / 3) === xLimit && Math.ceil(item.y / 3) === yLimit)
+      cube.push(item.value);
+    if (item.x === x) vert.push(item.value);
+    if (item.y === y) horiz.push(item.value);
+  });
+  let options = key.filter(
+    number =>
+      !cube.includes(number) &&
+      !horiz.includes(number) &&
+      !vert.includes(number)
+  );
+  return options;
+};
 
-
-const tester = (puzzle) => {
-  let start = new Date();
-
-  const printPuzzle = puzzle => {
-
-    for (let i = 0; i <= 6; i += 3) {
-      for (let j = 0; j < 3; j++) {
-        console.log(puzzle[i][j], 'Vert', puzzle[i + 1][j], 'Vert', puzzle[i + 2][j])
-      }
-      console.log('-----------------------------------')
+const findOptions = puzzle => {
+  let newPuzz = puzzle.map(item => {
+    if (item.value === 0) {
+      item.options = findIndividualOption(item.x, item.y, puzzle);
     }
-  }
-
-  let flattenPuzzle = puzz => {
-    let flatPuzzle = [].concat.apply([], puzzle)
-    return [].concat.apply([], flatPuzzle)
-  }
-
-  let findMissing = (arr) => {
-    let flat = buildCube(arr)
-    let missing = []
-    for (let i = 1; i <= 9; i++) {
-      if (!flat.includes(i)) missing.push(i)
+    if (item.options.length === 1) {
+      item.value = item.options[0];
+      item.options = [];
     }
-    return missing
-  }
+    return item;
+  });
+  return newPuzz;
+};
 
-  let buildCube = (arr) => {
-    return [].concat.apply([], arr)
-  }
-
-  let buildHoriz = (arr, x, y) => {
-    let horz = []
-    let row = Math.floor(x / 3) * 3
-    for (let i = row; i < row + 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (!Array.isArray(arr[i][y][j]))
-          horz.push(arr[i][y][j])
-      }
-    }
-    return horz
-  }
-
-  let buildVert = (arr, x, z) => {
-    let vert = []
-    while (x > 2) {
-      x -= 3
-    }
-    for (let i = x; i <= x + 6; i = i + 3) {
-      for (let j = 0; j < 3; j++) {
-        if (!Array.isArray(arr[i][j][z]))
-          vert.push(arr[i][j][z])
-      }
-    }
-    return vert
-  }
-
-  const setOptions = (puzz) => {
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 3; j++) {
-        for (let k = 0; k < 3; k++) {
-          if (puzz[i][j][k] === 0) {
-            let missing1 = findMissing(puzz[i])
-            let horz = buildHoriz(puzz, i, j)
-            let missing2 = findMissing(horz)
-            let vert = buildVert(puzz, i, k)
-            let missing3 = findMissing(vert)
-            let options = missing1.filter(value => missing2.includes(value)).filter(value => missing3.includes(value))
-            puzz[i][j][k] = options
-          }
+const makeGuess = puzzle => {
+  printPuzzle(puzzle);
+  for (let i = 0; i < puzzle.length; i++) {
+    //console.log(i);
+    printPuzzle(puzzle);
+    let element = puzzle[i];
+    if (element.value === 0) {
+      let options = findIndividualOption(element.x, element.y, puzzle);
+      console.log(options, element);
+      if (options.length === 0) {
+        return false;
+      } else if (options.length === 1) {
+        element.value = options[0];
+        element.options = [];
+      } else {
+        for (let j = 0; j < options.length; j++) {
+          let guess = true;
+          element.value = options[j];
+          guess = makeGuess(puzzle);
+          if (guess === true) return puzzle;
         }
       }
     }
-    return puzz
   }
+  return puzzle;
+};
 
-  const filterSingles = puzz => {
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 3; j++) {
-        for (let k = 0; k < 3; k++) {
-          if (Array.isArray(puzz[i][j][k]) && puzz[i][j][k].length === 1)
-            puzz[i][j][k] = puzz[i][j][k][0]
-        }
-      }
-    }
-    return puzz
-  }
+const tester = puzzle => {
+  printPuzzle(puzzle);
 
-  const filterDoubles = puzz => {
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 3; j++) {
-        for (let k = 0; k < 3; k++) {
-          if (Array.isArray(puzz[i][j][k]) && puzz[i][j][k].length === 2) {
-            let cube = buildCube(puzz[i]).filter(item => Array.isArray(item))
-            if (cube.includes)
-              console.log(cube)
-          }
-        }
-      }
-    }
-    return puzz
-  }
+  //findOptions(puzzle);
+  let newPuzz = makeGuess(puzzle);
+  //if (newPuzz) printPuzzle(newPuzz);
+  console.log(newPuzz);
 
-  let solution = setOptions(puzzle)
-  solution = filterSingles(solution)
-  solution = filterDoubles(solution)
+  return;
+};
 
-  //printPuzzle(solution)
-  console.log('time:', new Date() - start, 'milliseconds')
-  return 0
-}
-
-console.log(tester(easy1));
+console.time("Run Time");
+tester(easyObj2);
+console.timeEnd("Run Time");

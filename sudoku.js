@@ -422,6 +422,7 @@ const hard = [
 ];
 
 const printPuzzle = puzzle => {
+  //Prints the puzzle in the console in a rows of 9
   console.log("Puzzle Starting");
   let i = 1;
   while (i < 10) {
@@ -436,18 +437,29 @@ const printPuzzle = puzzle => {
 };
 
 const findIndividualOption = (x, y, puzz) => {
+  //setup initial variables
   let cube = [];
   let vert = [];
   let horiz = [];
+  //key is used for filtering possible solutions
   const key = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  //this sets the x and y cube block
   let xLimit = Math.ceil(x / 3);
   let yLimit = Math.ceil(y / 3);
+
+  //test every element in the puzzle to see
+  //if it influences the point in question
   puzz.forEach(item => {
+    //adds any known values to the cube
     if (Math.ceil(item.x / 3) === xLimit && Math.ceil(item.y / 3) === yLimit)
       cube.push(item.value);
+    //adds known values to the verticals
     if (item.x === x) vert.push(item.value);
+    //adds known values to the horizontals
     if (item.y === y) horiz.push(item.value);
   });
+  //create the options by finding the numbers that aren't
+  //included in the cube, horiz, or vert.
   let options = key.filter(
     number =>
       !cube.includes(number) &&
@@ -458,11 +470,21 @@ const findIndividualOption = (x, y, puzz) => {
 };
 
 const findOptions = puzz => {
+  //Finds options for every empty cell in the grid
   let min = 9;
+
+  //test every value in the puzzle
   puzz.forEach(item => {
+    //value === 0 indicates empty cell
     if (item.value === 0) {
+      //find options for that cell
       item.options = findIndividualOption(item.x, item.y, puzz);
+
+      //reset min with new option length if it's shorter than min now.
       if (item.options.length < min) min = item.options.length;
+
+      //if there are no options, return 0.
+      //there is no reason to continue.
       if (item.options.length === 0) {
         //console.log("no options", item);
         return [0, puzz];
@@ -472,54 +494,40 @@ const findOptions = puzz => {
   return [min, puzz];
 };
 
-const makeGuess = puzzle => {
-  //printPuzzle(puzzle);
-  for (let i = 0; i < puzzle.length; i++) {
-    //console.log(i);
-    //printPuzzle(puzzle);
-    let element = puzzle[i];
-    if (element.value === 0) {
-      let options = findIndividualOption(element.x, element.y, puzzle);
-      //console.log(options, element);
-      if (options.length === 0) {
-        //element.value = 0;
-        return false;
-      } else {
-        for (let j = 0; j < options.length; j++) {
-          let guess = true;
-          //console.log(j);
-          //printPuzzle(puzzle);
-          element.value = options[j];
-          guess = makeGuess(puzzle);
-          if (guess === false) element.value = 0;
-          //if (guess !== true) return puzzle;
-        }
-        //return false;
-      }
-    }
-  }
-  return puzzle;
-};
-
 const sudokuSolver = puzzle => {
+  //copy of the puzzle used in manipulation, so the original
+  //isn't modified during recursion
   let copy = _.cloneDeep(puzzle);
 
+  //min is the smallest number of options for a cell.
+  //this is used when making the guess.
+  //making a guess when there are two options is far better than if there are 9.
   let [min, puzz] = findOptions(copy);
+
+  //if there is a cell that has no options, the guess was bad.
   if (min === 0) {
     return false;
   }
 
+  //check every element in the puzzle
   for (let i = 0; i < puzz.length; i++) {
     const element = puzz[i];
+
+    //find empty cells with the minimum number of options.
     if (element.value === 0 && element.options.length === min) {
+      //Loop through the options and make a guess
       for (let j = 0; j < element.options.length; j++) {
-        // if (min === 1) console.log("only option", element);
-        // if (min > 1 && min < 9) console.log("guess", element);
-        // if (j > 0) console.log("changing guess", element);
         const guess = element.options[j];
+        //set the value
         element.value = guess;
+
+        //call the solver with the value set.
         let res = sudokuSolver(puzz);
+
+        //if a puzzle is returned, the solution works and should stop.
         if (res) return res;
+
+        //if the res is false and all guesses have been checked, return false
         if (!res && j === element.options.length - 1) return false;
       }
     }

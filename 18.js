@@ -119,7 +119,7 @@ const testTriangle = [
   [2, 4, 6],
   [8, 5, 9, 3],
   [0, 0, 0, 10, 10],
-  [0, 30, 0, 0, 0, 0]
+  [0, 30, 0, 0, 0, 10]
 ];
 
 const triangle = [
@@ -142,17 +142,13 @@ const triangle = [
 
 const tester = (n) => {
   let start = new Date();
-  let tree = []
-  for (let i = 0; i < n.length; i++) {
-    tree.push(n[i].slice(0, i + 1))
-  }
-  for (let i = tree.length - 2; i >= 0; i--) {
-    for (let j = 0; j < tree[i].length; j++) {
-      tree[i][j] += Math.max(tree[i + 1][j], tree[i + 1][j + 1])
+  for (let i = n.length - 2; i >= 0; i--) {
+    for (let j = 0; j < n[i].length; j++) {
+      n[i][j] += Math.max(n[i + 1][j], n[i + 1][j + 1])
     }
   }
   console.log('time:', new Date() - start)
-  return tree[0][0]
+  return n[0][0]
 }
 
-console.log(tester(arr));
+console.log(tester(triangle));
